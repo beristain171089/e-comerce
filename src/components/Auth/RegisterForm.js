@@ -26,7 +26,7 @@ export default function RegisterForm(props) {
                 changeForm();
                 
             } catch (error) {
-                setLoading(true);
+                setLoading(false);
                 Toast.show("Error al registrar el usuario", {
                     position: Toast.positions.CENTER
                 })
@@ -35,7 +35,7 @@ export default function RegisterForm(props) {
     });
 
     return (
-        <View>
+        <>
             <TextInput
                 style={formStyle.input}
                 label='Email'
@@ -82,7 +82,7 @@ export default function RegisterForm(props) {
             >
                 Iniciar sesión
             </Button>
-        </View>
+        </>
     )
 }
 
