@@ -29,15 +29,15 @@ export default function LoginForm(props) {
 
                 if (response.statusCode) throw "Error en el usuario o contraseña";
 
+                setLoading(false);
                 login(response);
 
             } catch (error) {
+                setLoading(false);
                 Toast.show(error, {
                     position: Toast.positions.CENTER,
                 });
-            }
-
-            setLoading(false);
+            }            
         }
     });
 
