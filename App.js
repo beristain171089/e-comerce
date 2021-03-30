@@ -58,12 +58,7 @@ export default function App() {
     [auth]
   )
 
-  if (auth === undefined)
-    return (
-      <View style={{ width: '100%', height: '100%', justifyContent: 'center' }}>
-        <ActivityIndicator color='red' size='large' />
-      </ View>
-    )
+  if (auth === undefined) return null
 
   return (
     <AuthContext.Provider value={authData}>
