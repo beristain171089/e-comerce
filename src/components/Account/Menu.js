@@ -1,11 +1,30 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 import { List } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native';
+import useAuth from '../../hooks/useAuth';
 
 export default function Menu() {
 
     const navigation = useNavigation();
+    const { logout } = useAuth();
+
+    const logoutAccount = () => {
+        Alert.alert(
+            'Cerrar sesión',
+            '¿Estas seguro de que quieres salir de tu cuenta?',
+            [
+                {
+                    text: 'NO'
+                },
+                {
+                    text: 'SI',
+                    onPress: logout
+                }
+            ],
+            { cancelable: false }
+        )
+    }
 
     return (
         <>
@@ -15,13 +34,13 @@ export default function Menu() {
                     title='Cambiar nombre'
                     description='Cambia el nombre de tu cuenta'
                     left={(props) => <List.Icon {...props} icon='face' />}
-                    onPress={() => console.log("dsfsdf")}
+                    onPress={() => navigation.navigate('change-name')}
                 />
                 <List.Item
                     title='Cambiar email'
                     description='Cambia el email de tu cuenta'
                     left={(props) => <List.Icon {...props} icon='at' />}
-                    onPress={() => console.log("dsfsdf")}
+                    onPress={() => navigation.navigate('change-email')}
                 />
                 <List.Item
                     title='Cambiar username'
@@ -60,7 +79,7 @@ export default function Menu() {
                     title='Cerrar sesión'
                     description='Cierra esta sesión e inicia con otra'
                     left={(props) => <List.Icon {...props} icon='logout' />}
-                    onPress={() => console.log("dsfsdf")}
+                    onPress={logoutAccount}
                 />
             </List.Section>
         </>
