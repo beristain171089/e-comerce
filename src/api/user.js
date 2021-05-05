@@ -38,8 +38,6 @@ export async function loginApi(formData) {
             body: JSON.stringify(formData)
         }
 
-        console.log(params);
-
         const response = await fetch(url, params);
         const result = await response.json();
 
