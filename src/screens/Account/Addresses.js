@@ -1,13 +1,19 @@
-import React, { useCallback } from 'react';
-import { StyleSheet, View, ScrollView, Text, TouchableWithoutFeedback } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { StyleSheet, View, ScrollView, Text, TouchableWithoutFeedback, ActivityIndicator } from 'react-native';
 import { IconButton } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { size } from 'lodash';
 import { getAddressesApi } from '../../api/address';
+import AddressList from '../../components/Address/AddressList';
 import useAuth from '../../hooks/useAuth';
 
 export default function Addresses() {
 
+    const navigation = useNavigation();
+
     const { auth } = useAuth();
+
+    const [addresses, setAddresses] = useState(null);
 
     useFocusEffect(
         useCallback(() => {
@@ -15,7 +21,7 @@ export default function Addresses() {
             (async () => {
 
                 const response = await getAddressesApi(auth);
-                console.log(response);
+                setAddresses(response);
 
             })()
 
@@ -25,9 +31,7 @@ export default function Addresses() {
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>Mis direcciones</Text>
-            <TouchableWithoutFeedback
-                onPress={() => console.log('dfas')}
-            >
+            <TouchableWithoutFeedback onPress={() => navigation.navigate('add-address')}            >
                 <View style={styles.addAddress}>
                     <Text style={styles.addAddressText}>Añadir una dirección</Text>
                     <IconButton
@@ -37,6 +41,14 @@ export default function Addresses() {
                     />
                 </View>
             </TouchableWithoutFeedback>
+            {!addresses ?
+                <ActivityIndicator size='large' style={styles.loading} color='#000' />
+                :
+                size(addresses) === 0 ?
+                    <Text style={styles.noAddressText}>Crea una dirección</Text>
+                    :
+                    <AddressList addresses={addresses} />
+            }
         </ScrollView>
     );
 };
@@ -61,5 +73,13 @@ const styles = StyleSheet.create({
     },
     addAddressText: {
         fontSize: 16
+    },
+    loading: {
+        marginTop: 20
+    },
+    noAddressText: {
+        fontSize: 16,
+        marginTop: 10,
+        textAlign: 'center'
     }
 });
