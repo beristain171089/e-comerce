@@ -14,18 +14,22 @@ export default function Addresses() {
     const { auth } = useAuth();
 
     const [addresses, setAddresses] = useState(null);
+    const [reloadAddresses, setReloadAddresses] = useState(false);
 
     useFocusEffect(
+
         useCallback(() => {
+
+            setAddresses(null);
 
             (async () => {
 
                 const response = await getAddressesApi(auth);
                 setAddresses(response);
-
+                setReloadAddresses(false);
             })()
 
-        }, [])
+        }, [reloadAddresses])
     );
 
     return (
@@ -47,7 +51,10 @@ export default function Addresses() {
                 size(addresses) === 0 ?
                     <Text style={styles.noAddressText}>Crea una dirección</Text>
                     :
-                    <AddressList addresses={addresses} />
+                    <AddressList
+                        addresses={addresses}
+                        setReloadAddresses={setReloadAddresses}
+                    />
             }
         </ScrollView>
     );

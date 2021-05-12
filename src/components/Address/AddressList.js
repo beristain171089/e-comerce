@@ -2,11 +2,51 @@ import React from 'react';
 import { StyleSheet, Text, View, Alert } from 'react-native';
 import { Button } from 'react-native-paper';
 import { map } from 'lodash';
+import { useNavigation } from '@react-navigation/native';
+import useAuth from '../../hooks/useAuth';
+import { deleteAddressApi } from '../../api/address'
 import colors from '../../styles/colors';
 
 export default function AddressList(props) {
 
-    const { addresses } = props;
+    const { addresses, setReloadAddresses } = props;
+
+    const { auth } = useAuth();
+    const navigation = useNavigation();
+
+    const deleteAddressAlert = (address) => {
+        Alert.alert(
+            'Eliminar dirección',
+            `¿Estas seguro de eliminar la dirección? ${address.title}`,
+            [
+                {
+                    text: 'NO'
+                },
+                {
+                    text: 'SI',
+                    onPress: () => deleteAddres(address._id)
+                }
+            ],
+            { cancelable: false }
+        )
+    };
+
+    const deleteAddres = async (idAddress) => {
+
+        try {
+
+            await deleteAddressApi(auth, idAddress);
+            setReloadAddresses(true);
+
+        } catch (error) {
+            console.log(error);
+        };
+
+    };
+
+    const goToUpdateAddress = (idAddress) => {
+        navigation.navigate('add-address', { idAddress });
+    };
 
     return (
         <View style={styles.container}>
@@ -29,12 +69,14 @@ export default function AddressList(props) {
                         <Button
                             mode='contained'
                             color={colors.primary}
+                            onPress={() => goToUpdateAddress(address._id)}
                         >
                             Editar
                         </Button>
                         <Button
-                             mode='contained'
-                             color={colors.primary}
+                            mode='contained'
+                            color={colors.primary}
+                            onPress={() => deleteAddressAlert(address)}
                         >
                             Eliminar
                         </Button>
