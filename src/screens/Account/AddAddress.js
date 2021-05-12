@@ -40,7 +40,7 @@ export default function AddAddress(props) {
 
         })()
 
-    }, [params])
+    }, [params]);
 
     const formik = useFormik({
         initialValues: initialValues(),
