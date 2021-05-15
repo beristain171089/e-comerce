@@ -1,18 +1,25 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableWithoutFeedback } from 'react-native';
 import { map } from 'lodash';
+import { useNavigation } from '@react-navigation/native';
 import { API_URL } from '../../utils/constants';
 
 export default function ListProduct(props) {
 
   const { products } = props;
 
+  const navigation = useNavigation();
+
+  const goToProduct = (id) => {
+    navigation.push('product', { idProduct: id })
+  }
+
   return (
     <View style={styles.container}>
       {map(products, (product) => (
         <TouchableWithoutFeedback
           key={product._id}
-          onPress={() => console.log(`${API_URL}${product.main_image.url}`)}
+          onPress={() => goToProduct(product._id)}
         >
           <View style={styles.containerProduct}>
             <View style={styles.product}>
