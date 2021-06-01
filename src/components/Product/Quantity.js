@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker'
 
 export default function Quantity(props) {
@@ -7,31 +7,29 @@ export default function Quantity(props) {
     const { quantity, setQuantity } = props;
 
     return (
-        <View style={{ zIndex: 2 }}>
-            <DropDownPicker
-                items={[
-                    {
-                        label: '1',
-                        value: 1
-                    },
-                    {
-                        label: '2',
-                        value: 2
-                    },
-                    {
-                        label: '3',
-                        value: 3
-                    }
-                ]}
-                defaultValue={quantity}
-                containerStyle={styles.containerStyle}
-                itemStyle={styles.itemStyle}
-                dropDownStyle={styles.dropDownPicker}
-                style={styles.dropDownPicker}
-                labelStyle={styles.labelStyle}
-                onChangeItem={(item) => setQuantity(item.value)}
-            />
-        </View>
+        <DropDownPicker
+            items={[
+                {
+                    label: '1',
+                    value: 1
+                },
+                {
+                    label: '2',
+                    value: 2
+                },
+                {
+                    label: '3',
+                    value: 3
+                }
+            ]}
+            defaultValue={quantity}
+            containerStyle={styles.containerStyle}
+            itemStyle={styles.itemStyle}
+            dropDownStyle={styles.dropDownPicker}
+            style={styles.dropDownPicker}
+            labelStyle={styles.labelStyle}
+            onChangeItem={(item) => setQuantity(item.value)}
+        />
     );
 };
 
@@ -44,7 +42,8 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start'
     },
     dropDownPicker: {
-        backgroundColor: '#fafafa'
+        backgroundColor: '#fafafa',
+        zIndex: 2
     },
     labelStyle: {
         color: '#000'
