@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Keyboard, Animated } from 'react-native';
 import { Searchbar } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import {
     AnimatedIcon,
     inputAnimationWidth,
@@ -14,11 +14,14 @@ import SearchHistory from './SearchHistory';
 import { updateSearchHistory } from '../../api/search';
 import colors from '../../styles/colors';
 
-export default function Search() {
+export default function Search(props) {
+
+    const { currentSearch } = props;
 
     const navigation = useNavigation();
+    const route = useRoute();
 
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(currentSearch || '');
     const [showHistory, setShowHistory] = useState(false);
     const [containerHeight, setContainerHeight] = useState(0);
 
@@ -45,9 +48,17 @@ export default function Search() {
 
         !isReuse && await updateSearchHistory(searchQuery);
 
-        navigation.push('search', {
-            search: isReuse ? reuseSearch : searchQuery
-        });
+        if (route.name === 'search') {
+
+            navigation.push('search', {
+                search: isReuse ? reuseSearch : searchQuery
+            });
+
+        } else {
+            navigation.navigate('search', {
+                search: isReuse ? reuseSearch : searchQuery
+            });
+        }
     };
 
     return (
