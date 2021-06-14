@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { StyleSheet, Text, ActivityIndicator, View, Button } from 'react-native';
+import { Platform } from "react-native";
+import { RootSiblingParent } from "react-native-root-siblings";
 import { Provider as PaperProvider } from 'react-native-paper';
 import jwtDecode from 'jwt-decode';
 import AppNavigation from './src/navigation/AppNavigation';
@@ -8,6 +9,8 @@ import AuthContext from './src/context/AuthContext';
 import { setTokenApi, getTokenApi, removeTokenApi } from './src/api/token';
 
 export default function App() {
+
+  const Wrapper = Platform.OS === "ios" ? React.Fragment : RootSiblingParent;
 
   const [auth, setAuth] = useState(undefined);
 
@@ -61,14 +64,16 @@ export default function App() {
   if (auth === undefined) return null
 
   return (
-    <AuthContext.Provider value={authData}>
-      <PaperProvider>
-        {auth ?
-          <AppNavigation />
-          :
-          <AuthScreen />
-        }
-      </PaperProvider >
-    </AuthContext.Provider >
+    <Wrapper>
+      <AuthContext.Provider value={authData}>
+        <PaperProvider>
+          {auth ?
+            <AppNavigation />
+            :
+            <AuthScreen />
+          }
+        </PaperProvider >
+      </AuthContext.Provider >
+    </Wrapper>
   );
 }
