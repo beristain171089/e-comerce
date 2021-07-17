@@ -57,10 +57,17 @@ export default function Product(props) {
                         {product.title}
                     </Text>
                     <View style={styles.prices}>
-                        <Text style={styles.currentPrice}>
-                            $ {calcPrice(product.price, product.discount)}
-                        </Text>
+                        <Text style={styles.currentPrice}>$ {calcPrice(product.price, product.discount)}</Text>
                     </View>
+                    {product.discount &&
+                        <View style={styles.containerDiscount}>
+                            <Text style={styles.discountText}>Ahorras: </Text>
+                            <Text style={styles.discountValue}>
+                                ${(((product.price * product.discount) / 100).toFixed(2))}
+                                &nbsp;({product.discount} %)
+                            </Text>
+                        </View>
+                    }
                 </View>
                 <View style={styles.btnsContainer}>
                     <View style={styles.selectQuantity}>
@@ -150,5 +157,19 @@ const styles = StyleSheet.create({
     inputQuantiy: {
         paddingHorizontal: 10,
         fontSize: 16
+    },
+    containerDiscount: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 5
+    },
+    discountText: {
+        fontSize: 14,
+        color: '#747474'
+    },
+    discountValue: {
+        fontSize: 14,
+        color: '#747474',
+        paddingLeft: 5
     }
 });

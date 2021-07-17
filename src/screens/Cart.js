@@ -6,21 +6,34 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import StatusBar from '../components/StatusBar';
 import NotProducts from '../components/Cart/NotProducts';
 import ProductList from '../components/Cart/ProductList';
+import AddressList from '../components/Cart/AddressesList';
+import Payment from '../components/Cart/Payment';
+import useAuth from '../hooks/useAuth';
 import { getProductCartApi } from '../api/cart';
+import { getAddressesApi } from '../api/address';
 import colors from '../styles/colors';
 
 export default function Cart() {
 
+    const { auth } = useAuth();
+
     const [cart, setCart] = useState(null);
     const [products, setProducts] = useState(null);
     const [reloadCart, setReloadCart] = useState(false);
+    const [addresses, setAddresses] = useState(null);
+    const [selectedAddress, setSelectedAddress] = useState(null);
+    const [totalPayment, setTotalPayment] = useState(null);
 
     useFocusEffect(
 
         useCallback(() => {
 
             setCart(null);
+            setAddresses(null);
+            setSelectedAddress(null);
+
             loadCart();
+            loadAddresses();
 
         }, [])
 
@@ -41,6 +54,12 @@ export default function Cart() {
         setCart(response);
     };
 
+    const loadAddresses = async () => {
+
+        const response = await getAddressesApi(auth);
+        setAddresses(response);
+    };
+
     return (
         <>
             <StatusBar backgroundColor={colors.bgDark} barStyle='light-content' />
@@ -54,6 +73,17 @@ export default function Cart() {
                             products={products}
                             setProducts={setProducts}
                             setReloadCart={setReloadCart}
+                            setTotalPayment={setTotalPayment}
+                        />
+                        <AddressList
+                            addresses={addresses}
+                            selectedAddress={selectedAddress}
+                            setSelectedAddress={setSelectedAddress}
+                        />
+                        <Payment
+                            products={products}
+                            selectedAddress={selectedAddress}
+                            totalPayment={totalPayment}
                         />
                     </ScrollView>
                 </KeyboardAwareScrollView>
