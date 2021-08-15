@@ -10,7 +10,7 @@ import { setTokenApi, getTokenApi, removeTokenApi } from './src/api/token';
 
 export default function App() {
 
-  const Wrapper = Platform.OS === "ios" ? React.Fragment : RootSiblingParent;
+  //const Wrapper = Platform.OS === "ios" ? React.Fragment : RootSiblingParent;
 
   const [auth, setAuth] = useState(undefined);
 
@@ -64,7 +64,7 @@ export default function App() {
   if (auth === undefined) return null
 
   return (
-    <Wrapper>
+    <RootSiblingParent>
       <AuthContext.Provider value={authData}>
         <PaperProvider>
           {auth ?
@@ -72,8 +72,8 @@ export default function App() {
             :
             <AuthScreen />
           }
-        </PaperProvider >
-      </AuthContext.Provider >
-    </Wrapper>
+        </PaperProvider>
+      </AuthContext.Provider>
+    </RootSiblingParent>
   );
 }

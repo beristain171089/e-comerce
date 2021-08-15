@@ -31,9 +31,7 @@ export default function ProductList(props) {
 
         })();
 
-    }, [cart]);
-
-   
+    }, [cart]);   
 
     return (
         <View>

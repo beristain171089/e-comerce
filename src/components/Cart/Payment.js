@@ -1,21 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import Toast from 'react-native-root-toast';
+import { size } from 'lodash';
+import useAuth from '../../hooks/useAuth';
+import { paymentCartApi, deleteCartApi } from '../../api/cart';
+import { STRIPE_PUBLISHABLE_KEY } from '../../utils/constants';
 import { formStyle } from '../../styles';
 import colors from '../../styles/colors';
+
+const stripe = require('stripe-client')(STRIPE_PUBLISHABLE_KEY);
 
 export default function Payment(props) {
 
     const { products, selectedAddress, totalPayment } = props;
 
+    const { auth } = useAuth();
+    const navigation = useNavigation();
+
+    const [loading, setLoading] = useState(false);
+
     const formik = useFormik({
         initialValues: initialValues(),
         validationSchema: Yup.object(validationSchema()),
         onSubmit: async (formData) => {
-            console.log('realizando pago');
-            console.log(formData);
+
+            setLoading(true);
+
+            const result = await stripe.createToken({ card: formData });
+
+            if (result?.error) {
+
+                setLoading(false);
+
+                Toast.show(result.error.message, {
+                    position: Toast.positions.CENTER
+                });
+
+            } else {
+
+                const response = await paymentCartApi(
+                    auth,
+                    result.id,
+                    products,
+                    selectedAddress
+                );
+
+                if (size(response) > 0) {
+                    await deleteCartApi();
+                    navigation.navigate('orders');
+                } else {
+                    Toast.show('Error al realizar el pedido', {
+                        position: Toast.positions.CENTER
+                    });
+
+                    setLoading(false);
+                };
+            };
         }
     });
 
@@ -65,7 +109,8 @@ export default function Payment(props) {
                 mode='contained'
                 contentStyle={styles.btnContent}
                 labelStyle={styles.btnText}
-                onPress={formik.handleSubmit}
+                onPress={!loading && formik.handleSubmit}
+                loading={loading}
             >
                 Pagar ${totalPayment && `${totalPayment}`}
             </Button>
@@ -73,7 +118,7 @@ export default function Payment(props) {
     );
 };
 
-function initialValues(params) {
+function initialValues() {
     return {
         number: '',
         exp_month: '',
